@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains rest_translation_util.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function rest_translation_util_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the rest_translation_util module.
+    case 'help.page.rest_translation_util':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('REST Translation Util') . '</p>';
+      return $output;
+
+    default:
+  }
+}

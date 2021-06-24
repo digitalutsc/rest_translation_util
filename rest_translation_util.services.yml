@@ -1,0 +1,6 @@
+services:
+  rest_translation_util.translationsubscriber:
+    class: Drupal\rest_translation_util\EventSubscriber\ReqeustEventSubscriber
+    tags:
+      - { name: 'event_subscriber' }
+

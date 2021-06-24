@@ -1,0 +1,13 @@
+{
+    "name": "rest_translation_util",
+    "type": "drupal-module",
+    "description": "REST Translation Util",
+    "keywords": [
+    ],
+    "homepage": "https://www.drupal.org/project/rest_translation_util",
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/rest_translation_util",
+        "source": "http://cgit.drupalcode.org/rest_translation_util",
+    },
+}
