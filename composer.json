@@ -8,6 +8,6 @@
     "minimum-stability": "dev",
     "support": {
         "issues": "https://www.drupal.org/project/issues/rest_translation_util",
-        "source": "http://cgit.drupalcode.org/rest_translation_util",
-    },
+        "source": "http://cgit.drupalcode.org/rest_translation_util"
+    }
 }
