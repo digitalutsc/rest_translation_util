@@ -24,7 +24,7 @@ class ReqeustEventSubscriber implements EventSubscriberInterface {
   public function onRequest(GetResponseEvent $event) {
 
     // Only preload on json/api requests.
-    if ($event->getRequest()->getRequestFormat() == 'json') {
+    if ($event->getRequest()->getRequestFormat() == 'json' && $event->getRequest()->getMethod() == 'PATCH') {
       $default_language = \Drupal::languageManager()->getDefaultLanguage()->getId();
 
       list(,$language,,$nid) = explode('/', $event->getRequest()->getPathInfo());
