@@ -7,7 +7,7 @@
 
 namespace Drupal\rest_translation_util\EventSubscriber;
 
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\node\Entity\Node;
@@ -22,7 +22,7 @@ class ReqeustEventSubscriber implements EventSubscriberInterface {
   /**
    * Code that should be triggered on event specified
    */
-  public function onRequest(GetResponseEvent $event) {
+  public function onRequest(RequestEvent $event) {
 
     // Only preload on json/api requests.
     if ($event->getRequest()->getRequestFormat() == 'json' && $event->getRequest()->getMethod() == 'PATCH') {
