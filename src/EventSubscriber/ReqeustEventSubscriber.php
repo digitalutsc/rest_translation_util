@@ -26,15 +26,10 @@ class ReqeustEventSubscriber implements EventSubscriberInterface {
 
     // Only preload on json/api requests.
     if ($event->getRequest()->getRequestFormat() == 'json' && $event->getRequest()->getMethod() == 'PATCH') {
-      $default_language = \Drupal::languageManager()->getDefaultLanguage()->getId();
       list(,$language,$bundle,$path_part_3,$path_part_4) = explode('/', $event->getRequest()->getPathInfo());
 
-      if (empty($language)) {
-        $language = $default_language;
-      }
-
       // Create translation only if POST request contains language param
-      if ($language != $default_language) {
+      if (!empty($language)) {
 
         // Need to load node and taxonomy term differently
         if ($bundle == "node") {
