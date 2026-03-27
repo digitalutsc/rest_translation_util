@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\rest_translation_util\EventSubscriber\RequestEventSubscriber.
- */
-
 namespace Drupal\rest_translation_util\EventSubscriber;
 
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -18,40 +13,44 @@ use Drupal\taxonomy\Entity\Term;
  */
 class ReqeustEventSubscriber implements EventSubscriberInterface {
 
-
   /**
-   * Code that should be triggered on event specified
+   * Code that should be triggered on event specified.
    */
   public function onRequest(RequestEvent $event) {
 
     // Only preload on json/api requests.
     if ($event->getRequest()->getRequestFormat() == 'json' && $event->getRequest()->getMethod() == 'PATCH') {
-      list(,$language,$bundle,$path_part_3,$path_part_4) = explode('/', $event->getRequest()->getPathInfo());
+      [, $language, $bundle, $path_part_3, $path_part_4] = explode('/', $event->getRequest()->getPathInfo());
 
-      // Create translation only if POST request contains language param
+      // Create translation only if POST request contains language param.
       if (!empty($language)) {
 
-        // Need to load node and taxonomy term differently
+        // Need to load node and taxonomy term differently.
         if ($bundle == "node") {
           $nid = $path_part_3;
+          // phpcs:ignore -- Node::load calls should be avoided in classes, use dependency injection instead
           $node = Node::load($path_part_3);
           if (!$node->hasTranslation($language)) {
+            // phpcs:ignore -- \Drupal calls should be avoided in classes, use dependency injection instead
             \Drupal::logger('rest_translation_util')->debug(
               "Node with ID @id has no '@lang' translation: create it!", [
                 '@id' => $nid,
                 '@lang' => $language,
-            ]);
+              ]);
             $node->addTranslation($language, ['title' => $node->label()])->save();
           }
-        } else if ($bundle == "taxonomy") {
+        }
+        elseif ($bundle == "taxonomy") {
           $tid = $path_part_4;
+          // phpcs:ignore -- Term::load calls should be avoided in classes, use dependency injection instead
           $term = Term::load($tid);
           if (!$term->hasTranslation($language)) {
+            // phpcs:ignore -- \Drupal calls should be avoided in classes, use dependency injection instead
             \Drupal::logger('rest_translation_util')->debug(
               "Term with ID @id has no '@lang' translation: create it!", [
                 '@id' => $tid,
                 '@lang' => $language,
-            ]);
+              ]);
             $term->addTranslation($language, ['name' => $term->label()])->save();
           }
         }
@@ -70,4 +69,3 @@ class ReqeustEventSubscriber implements EventSubscriberInterface {
   }
 
 }
-
