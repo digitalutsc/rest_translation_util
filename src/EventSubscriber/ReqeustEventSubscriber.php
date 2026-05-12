@@ -42,16 +42,6 @@ class ReqeustEventSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('entity_type.manager'),
-      $container->get('logger.factory')
-    );
-  }
-
-  /**
    * Code that should be triggered on event specified.
    */
   public function onRequest(RequestEvent $event) {
