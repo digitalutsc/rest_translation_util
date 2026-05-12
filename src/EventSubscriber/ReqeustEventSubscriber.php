@@ -5,13 +5,40 @@ namespace Drupal\rest_translation_util\EventSubscriber;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Drupal\node\Entity\Node;
-use Drupal\taxonomy\Entity\Term;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 
 /**
  * Event Subscriber Transaltion.
  */
 class ReqeustEventSubscriber implements EventSubscriberInterface {
+
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * The Drupal Logger Factory.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
+   */
+  protected $loggerFactory;
+
+  /**
+   * Constructs a new event subscriber object.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerFactory
+   *   The Drupal Logger Factory.
+   */
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, LoggerChannelFactoryInterface $loggerFactory) {
+    $this->entityTypeManager = $entityTypeManager;
+    $this->loggerFactory = $loggerFactory;
+  }
 
   /**
    * Code that should be triggered on event specified.
@@ -28,11 +55,9 @@ class ReqeustEventSubscriber implements EventSubscriberInterface {
         // Need to load node and taxonomy term differently.
         if ($bundle == "node") {
           $nid = $path_part_3;
-          // phpcs:ignore -- Node::load calls should be avoided in classes, use dependency injection instead
-          $node = Node::load($path_part_3);
+          $node = $this->entityTypeManager->getStorage('node')->load($nid);
           if (!$node->hasTranslation($language)) {
-            // phpcs:ignore -- \Drupal calls should be avoided in classes, use dependency injection instead
-            \Drupal::logger('rest_translation_util')->debug(
+            $this->loggerFactory->get('rest_translation_util')->debug(
               "Node with ID @id has no '@lang' translation: create it!", [
                 '@id' => $nid,
                 '@lang' => $language,
@@ -42,11 +67,9 @@ class ReqeustEventSubscriber implements EventSubscriberInterface {
         }
         elseif ($bundle == "taxonomy") {
           $tid = $path_part_4;
-          // phpcs:ignore -- Term::load calls should be avoided in classes, use dependency injection instead
-          $term = Term::load($tid);
+          $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($tid);
           if (!$term->hasTranslation($language)) {
-            // phpcs:ignore -- \Drupal calls should be avoided in classes, use dependency injection instead
-            \Drupal::logger('rest_translation_util')->debug(
+            $this->loggerFactory->get('rest_translation_util')->debug(
               "Term with ID @id has no '@lang' translation: create it!", [
                 '@id' => $tid,
                 '@lang' => $language,
